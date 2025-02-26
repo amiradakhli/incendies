@@ -1,13 +1,20 @@
 {
+  "name": "fire_detection",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "dependencies": {
     "@sendgrid/mail": "^8.1.4",
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
-    "firebase-admin": "^13.1.0",
-    "github": "^14.0.0",
-    "php": "^1.1.0",
-    "sql": "^0.78.0",
-    "tools": "^0.0.0",
+    "firebase": "^11.2.0",
     "twilio": "^5.4.3"
   }
 }

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - Surveillance des Incendies Forestiers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* Styles généraux */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #1e3d33; /* Vert foncé */
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Fond avec motifs de feuilles */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://www.transparenttextures.com/patterns/leaves.png');
+        opacity: 0.2;
+        z-index: -1;
+    }
+
+    /* Formulaire de connexion */
+    .login-container {
+        max-width: 400px;
+        width: 100%;
+        padding: 40px;
+        background: rgba(32, 64, 54, 0.8); /* Vert foncé semi-transparent */
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-container h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ddcbcb; /* Rouge orangé */
+        margin: 0 0 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .login-container input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 10px;
+        margin: 20px 0;
+        border: none;
+        border-radius: 5px;
+        background: #ff6b6b; /* Rouge orangé */
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .login-container button:hover {
+        background: #ff4500; /* Rouge plus foncé */
+    }
+
+    .login-container .error-message {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        margin-top: 10px;
+        display: none;
+    }
+
+    .login-container .error-message.active {
+        display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Connexion</h1>
+    <form id="login-form">
+      <input type="text" id="username" placeholder="Nom d'utilisateur" required>
+      <input type="password" id="password" placeholder="Mot de passe" required>
+      <button type="submit">Se connecter</button>
+      <div id="error-message" class="error-message"></div>
+    </form>
+  </div>
+
+  <script>
+    // Gestion du formulaire de connexion
+    const loginForm = document.getElementById('login-form');
+    const errorMessage = document.getElementById('error-message');
+
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Vérification des identifiants (exemple simple)
+      if (username === 'admin' && password === 'admin123') {
+        // Stocker l'état de connexion dans localStorage
+        localStorage.setItem('isLoggedIn', 'true');
+
+        // Redirection vers la page index.html
+        window.location.href = 'index.html';
+      } else {
+        errorMessage.textContent = 'Nom d\'utilisateur ou mot de passe incorrect.';
+        errorMessage.classList.add('active');
+      }
+    });
+  </script>
+</body>
+</html>

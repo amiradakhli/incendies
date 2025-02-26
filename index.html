@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surveillance des Incendies Forestiers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    
+    /* Styles généraux */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: #1e3d33; /* Vert foncé */
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Fond avec motifs de feuilles */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('https://www.transparenttextures.com/patterns/leaves.png');
+        opacity: 0.2;
+        z-index: -1;
+    }
+
+    /* Dashboard */
+    .dashboard {
+        max-width: 2000px;
+        width: 100%;
+        padding: 40px;
+        background: rgba(32, 64, 54, 0.8); /* Vert foncé semi-transparent */
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+
+    /* Titre */
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #ddcbcb; /* Rouge orangé */
+        margin: 0 0 40px;
+        position: relative;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    h1::after {
+        content: '';
+        display: block;
+        width: 600px;
+        height: 4px;
+        background: linear-gradient(90deg, #994747, #ff4500);
+        margin: 10px auto 0;
+        border-radius: 2px;
+    }
+
+    /* Conteneur des données */
+    .data-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    /* Cartes de données */
+    .data-card {
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        background: rgba(130, 106, 76, 0.8); /* Marron clair */
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .data-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Icônes et couleurs par type */
+    .data-card i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: inherit;
+        transition: color 0.3s ease;
+    }
+
+    .data-card[data-type="temperature"] {
+        color: #ff6b6b; /* Rouge orangé */
+    }
+
+    .data-card[data-type="humidity"] {
+        color: #4ecdc4; /* Turquoise */
+    }
+
+    .data-card[data-type="co2"] {
+        color: #2ecc71; /* Vert clair */
+    }
+
+    .data-card[data-type="co"] {
+        color: #f39c12; /* Orange */
+    }
+
+    .data-card[data-type="flame"] {
+        color: #d44a4a; /* Rouge */
+    }
+
+    /* Texte des cartes */
+    .data-card h2 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #fff;
+        margin: 15px 0;
+    }
+
+    .data-card p {
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: #fff;
+        margin: 0;
+    }
+
+    /* Alertes */
+    .alert {
+        display: none;
+        padding: 20px;
+        border-radius: 15px;
+        margin: 20px 0;
+        position: relative;
+        overflow: hidden;
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-align: left;
+        animation: fadeIn 0.5s ease-out;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .alert.active {
+        display: block;
+    }
+
+    /* Alerte Température */
+    .alert.temp {
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.8));
+        border-left: 5px solid #FF4500;
+    }
+
+    .alert.temp::after {
+        content: '🔥';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        animation: flame 1s infinite alternate;
+    }
+
+    @keyframes flame {
+        from {
+            transform: translateY(-50%) scale(1);
+        }
+        to {
+            transform: translateY(-50%) scale(1.2);
+        }
+    }
+
+    /* Alerte CO */
+    .alert.co {
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.8), rgba(178, 34, 34, 0.8));
+        border-left: 5px solid #8B0000;
+    }
+
+    .alert.co::after {
+        content: '☠️';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        animation: skull 1s infinite alternate;
+    }
+
+    @keyframes skull {
+        from {
+            transform: translateY(-50%) rotate(0deg);
+        }
+        to {
+            transform: translateY(-50%) rotate(10deg);
+        }
+    }
+    
+
+    /* Alerte CO2 */
+    .alert.co2 {
+        background: linear-gradient(135deg, rgba(112, 128, 144, 0.8), rgba(47, 79, 79, 0.8));
+        border-left: 5px solid #708090;
+    }
+
+    .alert.co2::after {
+        content: '💨';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        animation: smoke 1s infinite alternate;
+    }
+
+    @keyframes smoke {
+        from {
+            opacity: 0.5;
+            transform: translateY(-50%) translateX(0);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(-50%) translateX(10px);
+        }
+    }
+
+    /* Alerte Générale */
+    .alert.general {
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.8));
+        border-left: 5px solid #FFD700;
+    }
+
+    .alert.general::after {
+        content: '⚠️';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        animation: warning 1s infinite alternate;
+    }
+
+    @keyframes warning {
+        from {
+            transform: translateY(-50%) rotate(-10deg);
+        }
+        to {
+            transform: translateY(-50%) rotate(10deg);
+        }
+    }
+
+    /* Alerte Flamme */
+    .alert.flame {
+        background: linear-gradient(135deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.8));
+        border-left: 5px solid #FF4500;
+    }
+
+    .alert.flame::after {
+        content: '🔥';
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 2rem;
+        animation: flame 1s infinite alternate;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .dashboard {
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        .data-card {
+            padding: 15px;
+        }
+
+        .data-card h2 {
+            font-size: 1.4rem;
+        }
+
+        .data-card p {
+            font-size: 1.6rem;
+        }
+
+        .alert {
+            font-size: 1rem;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <header>
+      <h1>Surveillance des Incendies Forestiers</h1>
+    </header>
+    
+    <section class="data-container">
+      <article class="data-card" data-type="temperature">
+        <i class="fas fa-thermometer-half"></i>
+        <h2>Température</h2>
+        <p><span id="temperature">--</span> °C</p>
+      </article>
+      <article class="data-card" data-type="humidity">
+        <i class="fas fa-tint"></i>
+        <h2>Humidité</h2>
+        <p><span id="humidity">--</span> %</p>
+      </article>
+      <article class="data-card" data-type="co2">
+        <i class="fas fa-smog"></i>
+        <h2>CO2</h2>
+        <p><span id="co2">--</span> ppm</p>
+      </article>
+      <article class="data-card" data-type="co">
+        <i class="fas fa-skull-crossbones"></i>
+        <h2>CO</h2>
+        <p><span id="co">--</span> ppm</p>
+      </article>
+      <article class="data-card" data-type="flame">
+        <i class="fas fa-fire"></i>
+        <h2>Flame</h2>
+        <p><span id="flame">--</span></p>
+      </article>
+    </section>
+
+    <!-- Alertes séparées -->
+    <div id="alert-temp" class="alert temp">
+      <i class="fas fa-fire"></i>
+      <h3>Alerte Température</h3>
+      <p>La température a dépassé 50°C. Danger d'incendie !</p>
+    </div>
+    <div id="alert-co" class="alert co">
+      <i class="fas fa-skull-crossbones"></i>
+      <h3>Alerte Monoxyde de Carbone (CO)</h3>
+      <p>Le niveau de CO a dépassé 50 ppm. Évacuation immédiate !</p>
+    </div>
+    <div id="alert-co2" class="alert co2">
+      <i class="fas fa-smog"></i>
+      <h3>Alerte Dioxyde de Carbone (CO2)</h3>
+      <p>Le niveau de CO2 a dépassé 1000 ppm. Aération nécessaire !</p>
+    </div>
+    <div id="alert-general" class="alert general">
+      <i class="fas fa-exclamation-triangle"></i>
+      <h3>Alerte Générale</h3>
+      <p>Un incendie a été détecté dans la zone. Prenez vos précautions !</p>
+    </div>
+    <div id="alert-flame" class="alert flame">
+      <i class="fas fa-fire"></i>
+      <h3>Alerte Flamme</h3>
+      <p>Une flamme a été détectée. Danger d'incendie !</p>
+    </div>
+  </div>
+
+  <!-- Firebase SDK en mode compatibilité -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuration Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQR6SPQmcR_VB4iMyb5kdr-CFCgnsBp6Q",
+      authDomain: "fire-detection-aafdc.firebaseapp.com",
+      databaseURL: "https://fire-detection-aafdc-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "fire-detection-aafdc",
+      storageBucket: "fire-detection-aafdc.firebasestorage.app",
+      messagingSenderId: "866669467002",
+      appId: "1:866669467002:web:2139a073556a7527afb2c3"
+    };
+
+    // Initialisation Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const sensorsRef = database.ref('sensor');
+
+    // Fonction pour mettre à jour les valeurs des capteurs
+    function updateSensorValues(data) {
+      const temperatureElement = document.getElementById('temperature');
+      const humidityElement = document.getElementById('humidity');
+      const co2Element = document.getElementById('co2');
+      const coElement = document.getElementById('co');
+      const flameElement = document.getElementById('flame');
+
+      if (temperatureElement) temperatureElement.textContent = data.temp || '0';
+      if (humidityElement) humidityElement.textContent = data.humidite || '0';
+      if (co2Element) co2Element.textContent = data.co2 || '0';
+      if (coElement) coElement.textContent = data.co || '0';
+      if (flameElement) flameElement.textContent = data.flame === 1 ? 'Fire Detected' : 'No Fire';
+    }
+
+    // Fonction pour gérer les alertes
+    function handleAlerts(temp, co, co2, flame) {
+      const alertTemp = document.getElementById('alert-temp');
+      const alertCO = document.getElementById('alert-co');
+      const alertCO2 = document.getElementById('alert-co2');
+      const alertFlame = document.getElementById('alert-flame');
+      const alertGeneral = document.getElementById('alert-general');
+
+      // Alerte pour la température
+      if (temp > 25) {
+        alertTemp.classList.add('active');
+      } else {
+        alertTemp.classList.remove('active');
+      }
+
+      // Alerte pour le CO
+      if (co > 50) {
+        alertCO.classList.add('active');
+      } else {
+        alertCO.classList.remove('active');
+      }
+
+      // Alerte pour le CO2
+      if (co2 > 1000) {
+        alertCO2.classList.add('active');
+      } else {
+        alertCO2.classList.remove('active');
+      }
+
+      // Alerte pour la flamme
+      if (flame === 1) {
+        alertFlame.classList.add('active');
+      } else {
+        alertFlame.classList.remove('active');
+      }
+
+      // Alerte générale (si l'une des conditions est remplie)
+      if (temp > 25 || co > 50 || co2 > 1000 || flame === 1) {
+        alertGeneral.classList.add('active');
+      } else {
+        alertGeneral.classList.remove('active');
+      }
+    }
+
+    // Écoute des données en temps réel
+    sensorsRef.on('value', (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        console.log(data);
+        updateSensorValues(data); // Met à jour les valeurs des capteurs
+        handleAlerts(data.temp, data.co, data.co2, data.flame); // Gère les alertes
+      } else {
+        console.error("Aucune donnée trouvée dans Firebase.");
+      }
+    }, (error) => {
+      console.error("Erreur de lecture des données :", error);
+    });
+  // Vérifier si l'utilisateur est connecté
+  const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+  if (!isLoggedIn || isLoggedIn !== 'true') {
+    // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
+    window.location.href = 'login.html';
+  }
+  
+</script>
+<button id="logout-button" style="position: absolute; top: 20px; right: 20px; padding: 15px 25px; background: #ff6b6b; color: #fff; border: none; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: 600; transition: background 0.3s ease, transform 0.3s ease;">
+  Déconnexion
+</button>
+
+<script>
+  // Gestion de la déconnexion
+  const logoutButton = document.getElementById('logout-button');
+  logoutButton.addEventListener('click', () => {
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+  });
+</script>
+  </script>
+</body>
+
+</html>

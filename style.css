@@ -1,0 +1,229 @@
+/* Styles généraux */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #2E8B57, #228B22); /* Dégradé de vert forestier */
+  color: #F5F5F5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Effet de fond animé (feuilles qui tombent) */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/leaves.png'); /* Texture de feuilles */
+  opacity: 0.2;
+  animation: moveLeaves 20s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveLeaves {
+  from {
+      transform: translateY(-100%);
+  }
+  to {
+      transform: translateY(100%);
+  }
+}
+
+/* Dashboard */
+.dashboard {
+  max-width: 1200px;
+  width: 100%;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Titre */
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #F5F5F5;
+  margin: 0 0 40px;
+  position: relative;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, #FF4500, #FF8C00); /* Dégradé de feu */
+  margin: 10px auto 0;
+  border-radius: 2px;
+}
+
+/* Conteneur des données */
+.data-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Cartes de données */
+.data-card {
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.data-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Icônes et couleurs par type */
+.data-card i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.data-card[data-type="temperature"] {
+  color: #FF4500; /* Rouge orangé pour la température */
+}
+
+.data-card[data-type="humidity"] {
+  color: #4ECDC4; /* Turquoise pour l'humidité */
+}
+
+.data-card[data-type="co2"] {
+  color: #708090; /* Gris fumée pour le CO2 */
+}
+
+.data-card[data-type="co"] {
+  color: #8B4513; /* Brun terreux pour le CO */
+}
+
+/* Texte des cartes */
+.data-card h2 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #F5F5F5;
+  margin: 15px 0;
+}
+
+.data-card p {
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #F5F5F5;
+  margin: 0;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Animation des valeurs */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.9);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+.data-card p span {
+  display: inline-block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Alertes */
+.alert {
+  display: none;
+  padding: 15px;
+  background: linear-gradient(90deg, #FF4500, #FF8C00); /* Dégradé de feu */
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 10px;
+  animation: blink 1s infinite alternate;
+  margin-top: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.alert.active {
+  display: block;
+  opacity: 1;
+}
+.alert.flame::after {
+  content: '🔥';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  animation: flame 1s infinite alternate;
+}
+
+/* Clignotement de l'alerte */
+@keyframes blink {
+  from {
+      opacity: 0.8;
+  transform: scale(0.98);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard {
+      padding: 20px;
+  }
+
+  h1 {
+      font-size: 2rem;
+  }
+
+  .data-card {
+      padding: 15px;
+  }
+
+  .data-card h2 {
+      font-size: 1.4rem;
+  }
+
+  .data-card p {
+      font-size: 1.6rem;
+  }
+
+  .alert {
+      font-size: 1rem;
+  }
+}
+.alert.flame {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.8));
+  border-left: 5px solid #FF4500;
+}
