@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "fire-detection-3d83d",
+    "staging": "fire-detection-3d83d"
+  },
+  "targets": {},
+  "etags": {}
+}
