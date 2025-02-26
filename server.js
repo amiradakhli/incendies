@@ -1,14 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-
+const port = process.env.PORT || 3000; // ✅ Utilisation de PORT pour Render
 
 // Middleware
 app.use(cors());
@@ -17,13 +12,14 @@ app.use(bodyParser.json());
 // Servir les fichiers statiques (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Données des capteurs
+
+// Données des capteurs (variables globales)
 let sensorData = {
   temperature: 0,
   humidity: 0,
   co2: 0,
   co: 0,
-  flame: 0,
+  flame: 0
 };
 
 // Endpoint pour recevoir les données des capteurs
@@ -37,7 +33,6 @@ app.post('/api/data', (req, res) => {
     res.status(500).send("Erreur interne du serveur");
   }
 });
-
 // Endpoint pour récupérer les données des capteurs
 app.get('/api/data', (req, res) => {
   try {
