@@ -1,13 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Servir les fichiers statiques (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Données des capteurs
 let sensorData = {
@@ -15,7 +23,7 @@ let sensorData = {
   humidity: 0,
   co2: 0,
   co: 0,
-  flame:0,
+  flame: 0,
 };
 
 // Endpoint pour recevoir les données des capteurs
@@ -38,6 +46,11 @@ app.get('/api/data', (req, res) => {
     console.error("Erreur lors de l'envoi des données:", error);
     res.status(500).send("Erreur interne du serveur");
   }
+});
+
+// Route pour servir index.html par défaut
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Démarrer le serveur
